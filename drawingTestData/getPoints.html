@@ -4,19 +4,39 @@
     <title>getcher testing data here, hot fresh data</title>
   </head>
   <body>
+    <p id="down">placeholder</p>
+    <p id="up">i have text!</p>
     <canvas id="can" width="400" height="400" style="border: 1px solid black;"></canvas>
     <script>
       var c = document.getElementById("can");
       var ctx = c.getContext("2d");
-      c.addEventListener("mousemove", getCoord, false);
+      c.addEventListener("mousemove", getCurrCoord, false);
+      c.addEventListener("mousedown", getMD, false);
+      c.addEventListener("mouseup", getMU, false);
 
-      function getCoord(event) {
+      function getCurrCoord(event) {
           var c_x = event.clientX;
           var c_y = event.clientY;
           ctx.font = "15pt Arial";
           var msg = "x,y= " + c_x + "," + c_y;
           ctx.clearRect(0, 0, 400, 400);
           ctx.fillText(msg, 20, 20);
+      }
+
+      function getCoord(event, dir) {
+          var c_x = event.clientX;
+          var c_y = event.clientY;
+          return dir + " at: " + c_x + "," + c_y;
+      }
+
+      function getMD(event) {
+          var msg = getCoord(event, "down");
+          document.getElementById("down").innerHTML = msg;
+      }
+
+      function getMU(event) {
+          var msg = getCoord(event, "up");
+          document.getElementById("up").innerHTML = msg;
       }
     </script>
   </body>
