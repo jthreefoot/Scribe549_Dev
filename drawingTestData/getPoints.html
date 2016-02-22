@@ -17,14 +17,18 @@
       c.addEventListener("mousedown", getMD, false);
       c.addEventListener("mouseup", getMU, false);
 
+      var drawing = false;
+
       function getCurrCoord(event) {
-          var c_x = event.clientX;
-          var c_y = event.clientY;
-          ctx.font = "15pt Arial";
-          var msg = "x,y= " + c_x + "," + c_y;
-          ctx.clearRect(0, 0, 400, 400);
-          ctx.fillText(msg, 20, 20);
-          socket.emit("client_data", {"coord": msg});
+          if (drawing == true) {
+              var c_x = event.clientX;
+              var c_y = event.clientY;
+              ctx.font = "15pt Arial";
+              var msg = "x,y= " + c_x + "," + c_y;
+              ctx.clearRect(0, 0, 400, 400);
+              ctx.fillText(msg, 20, 20);
+              socket.emit("client_data", {"coord": msg});
+          }
       }
 
       function getCoord(event, dir) {
@@ -34,11 +38,13 @@
       }
 
       function getMD(event) {
+          drawing = true;
           var msg = getCoord(event, "down");
           document.getElementById("down").innerHTML = msg;
       }
 
       function getMU(event) {
+          drawing = false;
           var msg = getCoord(event, "up");
           document.getElementById("up").innerHTML = msg;
       }
