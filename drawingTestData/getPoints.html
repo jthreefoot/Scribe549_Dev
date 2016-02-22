@@ -24,7 +24,7 @@
               var c_x = event.clientX;
               var c_y = event.clientY;
               ctx.font = "15pt Arial";
-              var msg = "x,y= " + c_x + "," + c_y;
+              var msg = "(" + c_x + "," + c_y + ")";
               ctx.clearRect(0, 0, 400, 400);
               ctx.fillText(msg, 20, 20);
               socket.emit("client_data", {"coord": msg});
@@ -41,12 +41,14 @@
           drawing = true;
           var msg = getCoord(event, "down");
           document.getElementById("down").innerHTML = msg;
+          socket.emit("client_data", {"coord": "start"});
       }
 
       function getMU(event) {
           drawing = false;
           var msg = getCoord(event, "up");
           document.getElementById("up").innerHTML = msg;
+          socket.emit("client_data", {"coord": "end"});
       }
     </script>
   </body>
