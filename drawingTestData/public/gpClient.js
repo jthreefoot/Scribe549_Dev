@@ -1,61 +1,57 @@
 var socket = io();
 
-var c = document.getElementById("can");
-var can = $("#can");
+var can = $('#can');
 var offset = can.offset();
-var ctx = c.getContext("2d");
-c.addEventListener("mousemove", getCurrCoord, false);
-c.addEventListener("mousedown", getMD, false);
-c.addEventListener("mouseup", getMU, false);
+var c = can[0];
+var ctx = c.getContext('2d');
+c.addEventListener('mousemove', getCurrCoord, false);
+c.addEventListener('mousedown', getMD, false);
+c.addEventListener('mouseup', getMU, false);
 
 var drawing = false;
 
+function getXY(event) {
+    var x = Math.floor(event.clientX - offset.left);
+    var y = Math.floor(event.clientY - offset.top);
+    return [x,y]
+}
+
+function sendPoint(xy) {
+    var msg = '(' + xy[0] + ',' + xy[1] + ')';
+    socket.emit('client_data', {'coord': msg});
+}
 
 function getCurrCoord(event) {
     if (drawing == true) {
-        var c_x = event.clientX - offset.left;
-        var c_y = event.clientY - offset.top;
-        //ctx.font = "15pt Arial";
-        var msg = "(" + c_x + "," + c_y + ")";
-        //ctx.clearRect(0, 0, 400, 400);
-        //ctx.fillText(msg, 20, 20);
-        socket.emit("client_data", {"coord": msg});
+	var xy = getXY(event);
+
+	sendPoint(xy);
 	
-	//draw
-	ctx.lineTo(c_x,c_y);
+	// draw on screen
+	ctx.lineTo(xy[0], xy[1]);
 	ctx.stroke();
     }
 }
 
-function getCoord(event, dir) {
-    var c_x = event.clientX - offset.left;
-    var c_y = event.clientY - offset.top;
-    //return dir + " at: " + c_x + "," + c_y;
-    return "(" + c_x + "," + c_y + ")";
-}
-
 function getMD(event) {
     drawing = true;
-    var msg = getCoord(event, "down");
-    document.getElementById("down").innerHTML = msg;
-    socket.emit("client_data", {"coord": "start"});
-    // make sure to record first point where user clicks
-    socket.emit("client_data", {"coord": msg});
-    //draw
+    var xy = getXY(event);
+
+    socket.emit('client_data', {'coord': 'start'});
+    sendPoint(xy);
+
+    // draw
     ctx.beginPath();
-    var c_x = event.clientX - offset.left;
-    var c_y = event.clientY - offset.top;
-    ctx.moveTo(c_x, c_y);
+    ctx.moveTo(xy[0], xy[1]);
 }
 
 function getMU(event) {
     drawing = false;
-    var msg = getCoord(event, "up");
-    document.getElementById("up").innerHTML = msg;
-    socket.emit("client_data", {"coord": "end"});
+    
+    socket.emit('client_data', {'coord': 'end'});
+
     //draw
-    var x = event.clientX - offset.left;
-    var y = event.clientY - offset.top;
-    ctx.lineTo(x,y);
+    var xy = getXY(event);
+    ctx.lineTo(xy[0],xy[1]);
     ctx.stroke();
 }
