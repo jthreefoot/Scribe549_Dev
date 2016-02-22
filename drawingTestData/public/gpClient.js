@@ -24,7 +24,8 @@ function getCurrCoord(event) {
 function getCoord(event, dir) {
     var c_x = event.clientX;
     var c_y = event.clientY;
-    return dir + " at: " + c_x + "," + c_y;
+    //return dir + " at: " + c_x + "," + c_y;
+    return "(" + c_x + "," + c_y + ")";
 }
 
 function getMD(event) {
@@ -32,6 +33,8 @@ function getMD(event) {
     var msg = getCoord(event, "down");
     document.getElementById("down").innerHTML = msg;
     socket.emit("client_data", {"coord": "start"});
+    // make sure to record first point where user clicks
+    socket.emit("client_data", {"coord": msg});
 }
 
 function getMU(event) {
