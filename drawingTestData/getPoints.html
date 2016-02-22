@@ -7,7 +7,10 @@
     <p id="down">placeholder</p>
     <p id="up">i have text!</p>
     <canvas id="can" width="400" height="400" style="border: 1px solid black;"></canvas>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+      var socket = io();
+
       var c = document.getElementById("can");
       var ctx = c.getContext("2d");
       c.addEventListener("mousemove", getCurrCoord, false);
@@ -21,6 +24,7 @@
           var msg = "x,y= " + c_x + "," + c_y;
           ctx.clearRect(0, 0, 400, 400);
           ctx.fillText(msg, 20, 20);
+          socket.emit("client_data", {"coord": msg});
       }
 
       function getCoord(event, dir) {
