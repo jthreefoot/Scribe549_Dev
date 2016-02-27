@@ -11,22 +11,29 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var datadir = 'datafiles/';
-var filename = 'tmp';
+var filename = 'tmp'; //default if user doesn't set a fn
 
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname+'/nameTest.html'));
+    res.sendFile(path.join(__dirname+'/nameData.html'));
 });
 
 app.post('/name', function(req, res) {
     filename = req.body.filename;
-    //console.log(filename);
     res.sendFile(path.join(__dirname+'/getPoints.html'));
+});
+
+app.post('/savecanvas', function(req, res) {
+    var canData = req.body.candata;
+    //following from stackoverflow.com/questions/5867534/how-to-save-canvas-data-to-file
+    var strippedCanData = canData.replace(/^data:image\/\w+;base64,/, "");
+    var buf = new Buffer(strippedCanData, 'base64');
+    var pngname = datadir + filename + '.png';
+    fs.writeFile(pngname, buf);
 });
 
 io.on('connection', function(socket) {
     console.log('a user connected\n');
     socket.on('client_data', function(data) {
-	//console.log(data.coord);
 	var txtname = datadir + filename + '.txt';
 	fs.appendFile(txtname, data.coord+'\n', function(err) {
 	    if (err) return console.log(err);

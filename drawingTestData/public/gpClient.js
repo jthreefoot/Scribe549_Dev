@@ -57,3 +57,8 @@ function getMU(event) {
     ctx.lineTo(xy[0],xy[1]);
     ctx.stroke();
 }
+
+function saveCanvas() {
+    var canData = c.toDataURL('image/png');
+    $.post('/savecanvas', { candata: canData });
+}
