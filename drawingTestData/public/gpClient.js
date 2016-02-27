@@ -17,7 +17,9 @@ function getXY(event) {
 }
 
 function sendPoint(xy) {
-    var msg = '(' + xy[0] + ',' + xy[1] + ')';
+    var d = new Date();
+    var t = d.getTime();
+    var msg = '(' + xy[0] + ',' + xy[1] + "," + t + ')';
     socket.emit('client_data', {'coord': msg});
 }
 
