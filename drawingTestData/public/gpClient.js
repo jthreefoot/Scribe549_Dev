@@ -10,7 +10,14 @@ c.addEventListener('mouseup', getMU, false);
 
 var recording = false; //will only send data/draw when this true
 
-var drawing = false;
+var drawing = false; // are you changing the canvas?
+
+var DRAW_ID = true;
+var ERASE_ID = false;
+var drawOrErase = DRAW_ID; // are you drawing or erasing when you change the canvas?
+var PEN_WIDTH = 1;
+var ERASER_WIDTH = 20;
+
 var NO_DATA = -1;
 var xy = [NO_DATA, NO_DATA];
 
@@ -66,6 +73,13 @@ function getMD(event) {
 
 	//draw
 	ctx.beginPath();
+	if (drawOrErase == DRAW_ID) {
+	    ctx.strokeStyle='black';
+	    ctx.lineWidth=PEN_WIDTH;
+	} else {
+	    ctx.strokeStyle='white';
+	    ctx.lineWidth=ERASER_WIDTH;
+	}
 	ctx.moveTo(xy[0], xy[1]);
     }
 }
@@ -84,14 +98,26 @@ function getMU(event) {
 }
 
 function toggleRecord() {
-   recording = !recording;
-
+    recording = !recording;
+    
     //update button to new state
-    var togbtn = $('#toggleRecord');
+    var recbtn = $('#toggleRecord');
     if (recording == true) {
-	togbtn.text('stop recording data');
+	recbtn.text('stop recording data');
     } else {
-	togbtn.text('start recording data');
+	recbtn.text('start recording data');
+    }
+}
+
+function toggleDrawErase() {
+    drawOrErase = !drawOrErase;
+    
+    // update btn
+    var doebtn = $('#toggleDrawErase');
+    if (drawOrErase == DRAW_ID) {
+	doebtn.text('eraser');
+    } else {
+	doebtn.text('pen');
     }
 }
 
