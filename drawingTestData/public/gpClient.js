@@ -49,8 +49,6 @@ function getCurrCoord(event) {
     if (drawing == true) {
 	xy = getXY(event);
 
-	//sendPoint(xy); //now only sending on interval to get right #pts
-	
 	// draw on screen
 	if (recording == true) {
 	    ctx.lineTo(xy[0], xy[1]);
@@ -65,11 +63,8 @@ function getMD(event) {
 
     if (recording == true) {
 	socket.emit('client_data', {'coord': 'start'});
-    }
-    //sendPoint(xy);
 
-    // draw
-    if (recording == true) {
+	//draw
 	ctx.beginPath();
 	ctx.moveTo(xy[0], xy[1]);
     }
@@ -77,14 +72,12 @@ function getMD(event) {
 
 function getMU(event) {
     drawing = false;
-    
+    xy = getXY(event);
+
     if (recording == true) {
 	socket.emit('client_data', {'coord': 'end'});
-    }
 
-    //draw
-    xy = getXY(event);
-    if (recording == true) {
+	//draw
 	ctx.lineTo(xy[0],xy[1]);
 	ctx.stroke();
     }
