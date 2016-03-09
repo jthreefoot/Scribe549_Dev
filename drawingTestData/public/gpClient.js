@@ -9,6 +9,23 @@ c.addEventListener('mousedown', getMD, false);
 c.addEventListener('mouseup', getMU, false);
 
 var drawing = false;
+var NO_DATA = -1;
+var xy = [NO_DATA, NO_DATA];
+
+// want 20 coords per sec
+// .05 sec per coord > 50ms for interval
+var INTLEN = 50 //ms
+
+//on time, if drawing, get mouse pos & send
+var intvl = setInterval(function() {
+    if (drawing == true) {
+	//send
+	sendPoint(xy);
+    } else {
+	//send no data for pause
+	sendPoint([NO_DATA, NO_DATA]);
+    }
+}, INTLEN);
 
 function getXY(event) {
     var x = Math.floor(event.clientX - offset.left);
@@ -23,11 +40,12 @@ function sendPoint(xy) {
     socket.emit('client_data', {'coord': msg});
 }
 
+// on mousemove
 function getCurrCoord(event) {
     if (drawing == true) {
-	var xy = getXY(event);
+	xy = getXY(event);
 
-	sendPoint(xy);
+	//sendPoint(xy); //now only sending on interval to get right #pts
 	
 	// draw on screen
 	ctx.lineTo(xy[0], xy[1]);
@@ -37,10 +55,10 @@ function getCurrCoord(event) {
 
 function getMD(event) {
     drawing = true;
-    var xy = getXY(event);
+    xy = getXY(event);
 
     socket.emit('client_data', {'coord': 'start'});
-    sendPoint(xy);
+    //sendPoint(xy);
 
     // draw
     ctx.beginPath();
@@ -53,7 +71,7 @@ function getMU(event) {
     socket.emit('client_data', {'coord': 'end'});
 
     //draw
-    var xy = getXY(event);
+    xy = getXY(event);
     ctx.lineTo(xy[0],xy[1]);
     ctx.stroke();
 }
