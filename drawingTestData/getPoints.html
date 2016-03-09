@@ -9,6 +9,15 @@
     <canvas id="can" width=400 height=400 style="border: 1px solid black;"></canvas>
     <br/>
     <button id="save" onclick="saveCanvas()">save canvas image</button>
+    <script>
+      //prepare the canvas
+      var c = document.getElementById("can");
+      var ctx = c.getContext("2d");
+      ctx.beginPath();
+      ctx.rect(0,0,400,400);
+      ctx.fillStyle="white";
+      ctx.fill();
+    </script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="gpClient.js"></script>
