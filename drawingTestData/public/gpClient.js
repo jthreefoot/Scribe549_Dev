@@ -69,7 +69,12 @@ function getMD(event) {
     xy = getXY(event);
 
     if (recording == true) {
-	socket.emit('client_data', {'coord': 'start'});
+	if (drawOrErase == DRAW_ID) {
+	    var msg = 'start draw';
+	} else {
+	    var msg = 'start erase';
+	}
+	socket.emit('client_data', {'coord': msg});
 
 	//draw
 	ctx.beginPath();
