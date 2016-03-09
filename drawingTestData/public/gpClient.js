@@ -8,6 +8,8 @@ c.addEventListener('mousemove', getCurrCoord, false);
 c.addEventListener('mousedown', getMD, false);
 c.addEventListener('mouseup', getMU, false);
 
+var recording = false; //will only send data/draw when this true
+
 var drawing = false;
 var NO_DATA = -1;
 var xy = [NO_DATA, NO_DATA];
@@ -18,12 +20,14 @@ var INTLEN = 50 //ms
 
 //on time, if drawing, get mouse pos & send
 var intvl = setInterval(function() {
-    if (drawing == true) {
-	//send
-	sendPoint(xy);
-    } else {
-	//send no data for pause
-	sendPoint([NO_DATA, NO_DATA]);
+    if (recording == true) {
+	if (drawing == true) {
+	    //send
+	    sendPoint(xy);
+	} else {
+	    //send no data for pause
+	    sendPoint([NO_DATA, NO_DATA]);
+	}
     }
 }, INTLEN);
 
@@ -48,8 +52,10 @@ function getCurrCoord(event) {
 	//sendPoint(xy); //now only sending on interval to get right #pts
 	
 	// draw on screen
-	ctx.lineTo(xy[0], xy[1]);
-	ctx.stroke();
+	if (recording == true) {
+	    ctx.lineTo(xy[0], xy[1]);
+	    ctx.stroke();
+	}
     }
 }
 
@@ -57,26 +63,48 @@ function getMD(event) {
     drawing = true;
     xy = getXY(event);
 
-    socket.emit('client_data', {'coord': 'start'});
+    if (recording == true) {
+	socket.emit('client_data', {'coord': 'start'});
+    }
     //sendPoint(xy);
 
     // draw
-    ctx.beginPath();
-    ctx.moveTo(xy[0], xy[1]);
+    if (recording == true) {
+	ctx.beginPath();
+	ctx.moveTo(xy[0], xy[1]);
+    }
 }
 
 function getMU(event) {
     drawing = false;
     
-    socket.emit('client_data', {'coord': 'end'});
+    if (recording == true) {
+	socket.emit('client_data', {'coord': 'end'});
+    }
 
     //draw
     xy = getXY(event);
-    ctx.lineTo(xy[0],xy[1]);
-    ctx.stroke();
+    if (recording == true) {
+	ctx.lineTo(xy[0],xy[1]);
+	ctx.stroke();
+    }
+}
+
+function toggleRecord() {
+   recording = !recording;
+
+    //update button to new state
+    var togbtn = $('#toggleRecord');
+    if (recording == true) {
+	togbtn.text('stop recording data');
+    } else {
+	togbtn.text('start recording data');
+    }
 }
 
 function saveCanvas() {
-    var canData = c.toDataURL('image/png');
-    $.post('/savecanvas', { candata: canData });
+    if (recording == true) {
+	var canData = c.toDataURL('image/png');
+	$.post('/savecanvas', { candata: canData });
+    }
 }
