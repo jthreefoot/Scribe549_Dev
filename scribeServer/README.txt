@@ -1,3 +1,9 @@
+HOW TO RUN THING
+to test drawing stuff, run the gpServer in drawingTestData and drawingServer here
+for actual real things, you'd run drawingServer and processingServer
+(node filename.js to run things, in case you aren't familiar with running node stuff)
+
+ARCHITECTURE INFO
 drawingServer.js and processingServer.js will run simultaneously on the same machine
 the edison (or whatever) will send the tcp packets (or whatever) to processingServer to be processed
 processing Server then sends start/stop draw/erase and coords to drawingServer via socket
