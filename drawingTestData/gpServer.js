@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var drawingServSock = require('socket.io-client').connect('http://localhost:7000');
 var path = require('path');
 var fs = require('fs');
 var bodyParser = require('body-parser');
@@ -38,9 +39,10 @@ io.on('connection', function(socket) {
 	fs.appendFile(txtname, data.coord+'\n', function(err) {
 	    if (err) return console.log(err);
 	});
+	drawingServSock.emit('processedData', data.coord+'\n');
     });
 });
 
-http.listen(7000, function() {
-    console.log('listening on port 7000');
+http.listen(8080, function() {
+    console.log('listening on port 8080');
 });
