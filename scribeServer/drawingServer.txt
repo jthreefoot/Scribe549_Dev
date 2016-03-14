@@ -1,0 +1,77 @@
+/****** DRAWING SERVER *****
+ this part takes the processed coords/etc data and produces
+ the video file and forwards the data to the student client
+ side code which draws the livestream
+ ***************************/
+
+var express = require('express');
+var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+var path = require('path');
+var fs = require('fs');
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname+'/clientCanvas.html'));
+});
+
+var c = document.getElementById("can");
+var ctx = c.getContext("2d");
+//ctx.beginPath();
+//      ctx.rect(0,0,400,400);
+//      ctx.fillStyle="white";
+//      ctx.fill();
+io.on('connection', function(socket) {
+    console.log('made connection');
+    socket.on('processedData', function(data) {
+	var n = data.localeCompare("start draw\n")
+	var c = data.localeCompare("end\n")
+	var dragStart = 0
+	var dragEnd = 0
+	if( n == 0 ){
+		console.log(n)
+		// we are starting a drawing 
+		dragStart = 1
+
+	} else if(c == 0 ){
+		console.log(data)
+		dragEnd = 1 
+
+	}else{
+		var newDat = data.match(/\(([^)]+)\)/)[1]
+		//console.log(newDat)
+		var newerDat = newDat.split(",")
+		console.log(newerDat)
+		var firstDat = newerDat[0]
+		var secondDat = newerDat[1]
+		var x1 = parseInt(newerDat[0])
+		var y1 = parseInt(newerDat[1])
+		console.log(x1)
+		console.log(y1)
+		
+		if(dragStart == 1){
+			ctx.beginPath()
+			ctx.moveTo(x,y)
+			dragStart = 0
+		}else if(dragStart == 0){
+			ctx.lineTo(x,y)
+			ctx.stroke()
+		}else if(dragEnd == 1){
+			ctx.closePath()
+			dragEnd = 0
+		}else{
+
+		}
+	}
+	// forward to studentside livestream
+	//@Gabe this you
+	// first connect to canvas file
+	//Listen for incoming points 
+	//Incomming points come from processedData 
+
+	//generate video file
+    });
+});
+
+http.listen(7000, function() {
+    console.log('listening on port 7000');
+});
