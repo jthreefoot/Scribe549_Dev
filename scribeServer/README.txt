@@ -3,6 +3,11 @@ to test drawing stuff, run the gpServer in drawingTestData and drawingServer her
 for actual real things, you'd run drawingServer and processingServer
 (node filename.js to run things, in case you aren't familiar with running node stuff)
 
+--> It still works exactly how you'd expect it to. gpServer acts as our "board" as you draw on it, 
+inputs are cloned to the client side. You should be able to open a bunch of clients and still have it work. 
+
+TODO for client: Make it look actually appealing.
+
 ARCHITECTURE INFO
 drawingServer.js and processingServer.js will run simultaneously on the same machine
 the edison (or whatever) will send the tcp packets (or whatever) to processingServer to be processed
