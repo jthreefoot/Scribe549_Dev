@@ -16,3 +16,7 @@ it will also eventually forward the lecturer's speaking audio to the same client
 it will also eventually generate the video file for the lecture archive
 it will also probably handle student/course registration stuff eventually
 
+
+NOTE: 
+I included a bunch of modules we should probably get rid of when I was working over break, sorry Jane :X 
+
