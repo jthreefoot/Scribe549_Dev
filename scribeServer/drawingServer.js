@@ -26,6 +26,7 @@ io.on('connection', function(socket) {
     socket.on('processedData', function(data) {
 	var n = data.localeCompare("start draw\n")
 	var c = data.localeCompare("end\n")
+	console.log(data)
 
 	if( n == 0 ){
 		console.log(n)
