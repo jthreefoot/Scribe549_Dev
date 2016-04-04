@@ -266,10 +266,10 @@ int main() {
   // intersect at 116, 104
   struct Circle c1, c2;
   c1.center.x = 0;
-  c1.center.y = 200;
+  c1.center.y = MAX_HEIGHT;
   c1.radius = 150;
-  c2.center.x = 400;
-  c2.center.y = 200;
+  c2.center.x = MAX_WIDTH;
+  c2.center.y = MAX_HEIGHT;
   c2.radius = 300;
 
   // getCenterDist tests
