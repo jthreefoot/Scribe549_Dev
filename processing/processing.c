@@ -154,10 +154,22 @@ void getCirclesRadicalLine(struct Circle *c1, struct Circle *c2, struct Line *l)
   }
 }
 
+/* given a point checks if it's actually on the board
+ * return 0/1 for false/true
+ */
+int isOnBoard(struct Point pt) {
+  if ((0 <= pt.x && pt.x <= MAX_WIDTH) &&
+      (0 <= pt.y && pt.y <= MAX_HEIGHT)) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
 /* trilaterates based on the given four circles */
 /* circles are in the array in the order:
  * top left, top right, bottom left, bottom right */
-struct Point *trilaterate(struct Circle **circles, int numCircles){
+void trilaterate(struct Circle **circles, int numCircles, struct Point *drawPt){
   switch (numCircles) {
   case 4:
     // find the intersection of two diagonals
@@ -169,6 +181,21 @@ struct Point *trilaterate(struct Circle **circles, int numCircles){
     break;
   case 2:
     // find two intersections, throw out the one outside the board.
+    if (checkCircleIntersection(circles[0], circles[1])){
+      struct Point points[2];
+      getCircleIntersectionPoints(circles[0], circles[1], &points);
+      if (isOnBoard(points[0])) {
+	drawPt->x = points[0].x;
+	drawPt->y = points[0].y;
+      } else if (isOnBoard(points[1])){
+	drawPt->x = points[1].x;
+	drawPt->y = points[1].y;
+      } else {
+	printf("something hecked up\n");
+      }
+    } else {
+      printf("bad data\n");
+    }
     break;
   default:
     break;
