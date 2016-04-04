@@ -14,7 +14,7 @@ struct Point {
 struct Vector {
   float x;
   float y;
-}
+};
 
 // y = mx + b slope-intercept form
 struct Line {
@@ -80,7 +80,7 @@ int checkCircleIntersection(struct Circle *c1, struct Circle *c2) {
  * where they intersect */
 void getLineIntersection(struct Line *l1, struct Line *l2, struct Point *p) {
   p->x = (l1->b - l2->b) / (l1->m - l2->m);
-  p->y = l1->m * x + l1->b;
+  p->y = l1->m * p->x + l1->b;
 }
 
 void getLineBetweenPoints(struct Point *p1, struct Point *p2, struct Line *l) {
@@ -112,28 +112,38 @@ void getCircleLineFromNonIntersection(struct Circle *c1, struct Circle *c2, stru
  * where they intersect
  * returns an array of points (will be either one or two points) */
 //@TODO tangent single intersection stuff
-struct Point **getCircleIntersectionPoints(struct Circle *c1, struct Circle *c2){
+void getCircleIntersectionPoints(struct Circle *c1, struct Circle *c2, struct Point *intersections) {
   // paulbourke.net/geometry/circlesphere/
   // "source code" example under circle intersections
   float a, dx, dy, d, h, rx, ry;
   float x2, y2;
+  dx = c2->center.x - c1->center.x;
+  dy = c2->center.y - c1->center.y;
   d = getCenterDist(c1, c2);
-  if (d > (r0 + r1)) {
-    return 0;
+  if (d == (c1->radius + c2->radius)) {
+    return;
   }
-
-
-  return 0;
+  a = ((c1->radius * c1->radius) - (c2->radius * c2->radius) + (d*d)) / (2 * d);
+  x2 = c1->center.x + (dx * a/d);
+  y2 = c1->center.y + (dy * a/d);
+  h = sqrt(c1->radius * c1->radius - a*a);
+  rx = -dy * (h/d);
+  ry = dx * (h/d);
+  intersections[0].x = x2 + rx;
+  intersections[0].y = y2 + ry;
+  intersections[1].x = x2 - rx;
+  intersections[1].y = y2 + ry;
 }
 
 /* gets the radical line of two intersecting circles */
 void getCircleLineFromIntersection(struct Circle *c1, struct Circle *c2, struct Line *l) {
   //@TODO add handling for tangent circles
-  struct Point **intersections = getCircleIntersectionPoints(c1, c2);
-  struct Point *p1 = intersections[0];
-  struct Point *p2 = intersections[1];
-  float slope = (p2->y - p1->y) / (p2->x - p1->x);
-  float yInt = -slope * p1->x + p1->y;
+  struct Point intersections[2];
+  getCircleIntersectionPoints(c1, c2, intersections);
+  struct Point p1 = intersections[0];
+  struct Point p2 = intersections[1];
+  float slope = (p2.y - p1.y) / (p2.x - p1.x);
+  float yInt = -slope * p1.x + p1.y;
   l->m = slope;
   l->b = yInt;
 }
@@ -199,7 +209,7 @@ void trilaterate(struct Circle **circles, int numCircles, struct Point *drawPt){
     break;
   default:
     break;
-  return 0;
+  }
 }
 
 int main() {
