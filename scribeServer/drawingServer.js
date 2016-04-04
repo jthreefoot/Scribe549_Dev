@@ -10,9 +10,11 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 var fs = require('fs');
+
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname+'/clientCanvas.html'));
 });
+
 app.use(express.static('public'));
 
 //ctx.beginPath();
