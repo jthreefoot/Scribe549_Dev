@@ -63,6 +63,20 @@ void getPointFromVector(struct Point *p, struct Vector *v, struct Point *newPoin
   newPoint->y = p->y + v->y;
 }
 
+/* given two lines, returns the point
+ * where they intersect */
+void getLineIntersection(struct Line *l1, struct Line *l2, struct Point *p) {
+  p->x = (l2->b - l1->b) / (l1->m - l2->m);
+  p->y = l1->m * p->x + l1->b;
+}
+
+void getLineBetweenPoints(struct Point *p1, struct Point *p2, struct Line *l) {
+  float m = (p2->y - p1->y) / (p2->x - p1->x);
+  float b = p2->y - m*(p2->x);
+  l->m = m;
+  l->b = b;
+}
+
 /* gets distance between centers of two circles */
 float getCenterDist(struct Circle *c1, struct Circle *c2){
   float xDif = c1->center.x - c2->center.x;
@@ -74,20 +88,6 @@ float getCenterDist(struct Circle *c1, struct Circle *c2){
  * returns 1 for true, 0 for false. */
 int checkCircleIntersection(struct Circle *c1, struct Circle *c2) {
   return c1->radius + c2->radius >= getCenterDist(c1, c2);
-}
-
-/* given two lines, returns the point
- * where they intersect */
-void getLineIntersection(struct Line *l1, struct Line *l2, struct Point *p) {
-  p->x = (l1->b - l2->b) / (l1->m - l2->m);
-  p->y = l1->m * p->x + l1->b;
-}
-
-void getLineBetweenPoints(struct Point *p1, struct Point *p2, struct Line *l) {
-  float m = (p2->y - p1->y) / (p2->x - p1->x);
-  float b = p2->y - m*(p2->x);
-  l->m = m;
-  l->b = b;
 }
 
 /* gets the "radical line" of two non-intersecting circles */
@@ -132,7 +132,7 @@ void getCircleIntersectionPoints(struct Circle *c1, struct Circle *c2, struct Po
   intersections[0].x = x2 + rx;
   intersections[0].y = y2 + ry;
   intersections[1].x = x2 - rx;
-  intersections[1].y = y2 + ry;
+  intersections[1].y = y2 - ry;
 }
 
 /* gets the radical line of two intersecting circles */
@@ -179,7 +179,7 @@ int isOnBoard(struct Point pt) {
 /* trilaterates based on the given four circles */
 /* circles are in the array in the order:
  * top left, top right, bottom left, bottom right */
-void trilaterate(struct Circle **circles, int numCircles, struct Point *drawPt){
+void trilaterate(struct Circle *circles, int numCircles, struct Point *drawPt){
   switch (numCircles) {
   case 4:
     // find the intersection of two diagonals
@@ -191,9 +191,9 @@ void trilaterate(struct Circle **circles, int numCircles, struct Point *drawPt){
     break;
   case 2:
     // find two intersections, throw out the one outside the board.
-    if (checkCircleIntersection(circles[0], circles[1])){
+    if (checkCircleIntersection(&circles[0], &circles[1])){
       struct Point points[2];
-      getCircleIntersectionPoints(circles[0], circles[1], &points);
+      getCircleIntersectionPoints(&circles[0], &circles[1], points);
       if (isOnBoard(points[0])) {
 	drawPt->x = points[0].x;
 	drawPt->y = points[0].y;
@@ -213,5 +213,86 @@ void trilaterate(struct Circle **circles, int numCircles, struct Point *drawPt){
 }
 
 int main() {
-  return 0;
+  // getMidpoint tests
+  struct Point p1, p2, mid;
+  p1.x = 0;
+  p1.y = 2;
+  p2.x = 2;
+  p2.y = 5;
+  getMidpoint(&p1, &p2, &mid);
+  printf("Midpoint between (%f, %f) and (%f, %f) is (%f, %f)\n", p1.x, p1.y, p2.x, p2.y, mid.x, mid.y);
+
+  // getVector tests
+  struct Vector v;
+  getVector(&p1, &p2, &v);
+  printf("Vector from (%f, %f) to (%f, %f) is (%f, %f)\n", p1.x, p1.y, p2.x, p2.y, v.x, v.y);
+
+  getVector(&p2, &p1, &v);
+  printf("Vector from (%f, %f) to (%f, %f) is <%f, %f>\n", p2.x, p2.y, p1.x, p1.y, v.x, v.y);
+
+  // getVectorLength tests
+  float mag = getVectorLength(&v);
+  printf("Length of vector <%f, %f> is %f\n", v.x, v.y, mag);
+
+  // getLineFromPointSlope tests
+  struct Line l;
+  float m = 3;
+  getLineFromPointSlope(&p2, m, &l);
+  printf("Line from point (%f, %f) with slope %f has y-intercept %f\n", p2.x, p2.y, m, l.b);
+
+  // scaleVector tests
+  struct Vector v_saved = v;
+  scaleVector(&v, 2);
+  printf("Vector in the direction of <%f, %f> of magnitude %d is <%f, %f>\n", v_saved.x, v_saved.y, 2, v.x, v.y);
+
+  // getPointFromVector tests
+  struct Point newPoint;
+  getPointFromVector(&p1, &v, &newPoint);
+  printf("Point from (%f, %f) in the direction of <%f, %f> is (%f, %f)\n", p1.x, p1.y, v.x, v.y, newPoint.x, newPoint.y);
+
+  // getLineIntersection tests;
+  struct Line l2;
+  struct Point intersection;
+  l2.m = 2;
+  l2.b = 5;
+  getLineIntersection(&l, &l2, &intersection);
+  printf("Lines y = %fx + %f and y = %fx + %f intersect at (%f, %f)\n", l.m, l.b, l2.m, l2.b, intersection.x, intersection.y);
+
+  // getLineBetweenPoints tests
+  struct Line l3;
+  getLineBetweenPoints(&intersection, &p1, &l3);
+  printf("The line between (%f, %f) and (%f, %f) is y = %fx + %f\n", intersection.x, intersection.y, p1.x, p1.y, l3.m, l3.b);
+
+  // intersect at 116, 104
+  struct Circle c1, c2;
+  c1.center.x = 0;
+  c1.center.y = 200;
+  c1.radius = 150;
+  c2.center.x = 400;
+  c2.center.y = 200;
+  c2.radius = 300;
+
+  // getCenterDist tests
+  printf("Center between c1 and c2 is %f\n", getCenterDist(&c1, &c2));
+
+  if (checkCircleIntersection(&c1, &c2)) {
+    printf("These circles intersect!\n");
+  } else {
+    printf("These circles do not intersect.\n");
+  }
+
+  // assuming circles intersect
+  // getCircleIntersectionPoints tests
+  struct Point intersections[2];
+  getCircleIntersectionPoints(&c1, &c2, intersections);
+  printf("c1 and c2 intersect at (%f, %f) and (%f, %f)\n", intersections[0].x, intersections[0].y, intersections[1].x, intersections[1].y);
+
+  // trilaterate test
+  struct Circle circles[2];
+  circles[0] = c1;
+  circles[1] = c2;
+  int numCircles = 2;
+  struct Point circIntersection;
+  trilaterate(circles, numCircles, &circIntersection);
+  printf("The two circles intersect on the board at (%f, %f)\n", circIntersection.x, circIntersection.y);
 }
