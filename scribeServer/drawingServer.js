@@ -10,6 +10,11 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 var fs = require('fs');
+var bodyParser = require('body-parser');
+
+var drawingStarted = false;
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname+'/clientCanvas.html'));
@@ -25,14 +30,19 @@ var dragStart = 0
 var dragEnd = 0 
 
 app.post('/', function(req, res) {
-    var newDat = req.body.match(/\(([^)]+)\)/)[1]
-    var newerDat = newDat.split(",")
-    var firstDat = newerDat[0]
-    var secondDat = newerDat[1]
-    var x1 = parseInt(newerDat[0])
-    var y1 = parseInt(newerDat[1])
+    if (drawingStarted != true) { //first data point
+	drawingStarted = true;
+	io.sockets.emit('draw', {
+	    x: x1,
+	    y: y1,
+	    type: "start"
+	});
+    }
+    var x1 = parseInt(req.body.x)
+    var y1 = parseInt(req.body.y)
+    console.log("x: " + x1 + " y: " + y1);
     
-    socket.broadcast.emit('draw', {
+    io.sockets.emit('draw', {
 	x: x1,
 	y: y1,
 	type: "drawing"
@@ -110,4 +120,4 @@ io.on('connection', function(socket) {
 http.listen(7000, function() {
     console.log('listening on port 7000');
 });
-c
+
