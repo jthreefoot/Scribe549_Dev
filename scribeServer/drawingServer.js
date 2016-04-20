@@ -23,6 +23,22 @@ app.use(express.static('public'));
 //      ctx.fill();
 var dragStart = 0 
 var dragEnd = 0 
+
+app.post('/', function(req, res) {
+    var newDat = req.body.match(/\(([^)]+)\)/)[1]
+    var newerDat = newDat.split(",")
+    var firstDat = newerDat[0]
+    var secondDat = newerDat[1]
+    var x1 = parseInt(newerDat[0])
+    var y1 = parseInt(newerDat[1])
+    
+    socket.broadcast.emit('draw', {
+	x: x1,
+	y: y1,
+	type: "drawing"
+    });
+});
+
 io.on('connection', function(socket) {
     console.log('made connection');
     socket.on('processedData', function(data) {
@@ -94,3 +110,4 @@ io.on('connection', function(socket) {
 http.listen(7000, function() {
     console.log('listening on port 7000');
 });
+c
