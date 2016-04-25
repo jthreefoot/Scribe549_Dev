@@ -38,8 +38,8 @@ app.post('/', function(req, res) {
 	    type: "start"
 	});
     }
-    var x1 = parseInt(req.body.x)
-    var y1 = parseInt(req.body.y)
+    var x1 = parseFloat(req.body.x)
+    var y1 = parseFloat(req.body.y)
     console.log("x: " + x1 + " y: " + y1);
     
     io.sockets.emit('draw', {
