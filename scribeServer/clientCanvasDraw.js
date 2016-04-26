@@ -11,22 +11,23 @@ App.socket = io.connect('http://localhost:7000');
 
 c = document.getElementById('can');
 ctx = c.getContext("2d");
+//ctx.translate(-500, 0);
 ctx.strokeStyle=("red");
 
 
 function draw(x,y, type){
-	if (type === "start") {
+    if (type === "start") {
         ctx.beginPath();
         console.log("new Shape")
         return ctx.moveTo(x, y);
     } else if (type === "drawing") {
         ctx.lineTo(x, y);
         return ctx.stroke();
-    }else if(x == -1){
+    }/*else if(x == -1){
     	console.log("I'm here")
     	ctx.beginPath();
     	//ctx.closePath();
-    } 
+    } */
     else 
     {
     	ctx.beginPath();
@@ -35,5 +36,6 @@ function draw(x,y, type){
 
 }
 App.socket.on('draw', function(data) {
+  console.log("got draw");
   return draw(data.x, data.y,data.type);
 });

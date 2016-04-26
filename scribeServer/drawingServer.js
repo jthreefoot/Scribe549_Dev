@@ -38,15 +38,25 @@ app.post('/', function(req, res) {
 	    type: "start"
 	});
     }
-    var x1 = parseFloat(req.body.x)
-    var y1 = parseFloat(req.body.y)
-    console.log("x: " + x1 + " y: " + y1);
-    
-    io.sockets.emit('draw', {
-	x: x1,
-	y: y1,
-	type: "drawing"
-    });
+    var stop = parseInt(req.body.stop);
+    if (stop == 0) {
+	var x1 = parseFloat(req.body.x);
+	var y1 = parseFloat(req.body.y);
+	console.log("x: " + x1 + " y: " + y1);
+	
+	io.sockets.emit('draw', {
+	    x: x1,
+	    y: y1,
+	    type: "drawing"
+	});
+    } else { //pen lifted so stopped drawing
+	console.log("stop");
+	io.sockets.emit('draw', {
+	    x: x1,
+	    y: y1,
+	    type: "end"
+	});
+    }
 });
 
 io.on('connection', function(socket) {
