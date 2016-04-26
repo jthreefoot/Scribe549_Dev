@@ -35,7 +35,20 @@ function draw(x,y, type){
     }
 
 }
+
+function clear(){
+    ctx.beginPath();
+    ctx.clearRect(0,0, -500,1000);
+    ctx.clearRect(0,0, 500, 1000);
+    ctx.closePath();
+}
+
 App.socket.on('draw', function(data) {
   console.log("got draw");
   return draw(data.x, data.y,data.type);
+});
+
+App.socket.on('clear', function(data){
+    console.log("got clear");
+    returne clear();
 });

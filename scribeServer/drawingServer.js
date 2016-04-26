@@ -59,6 +59,10 @@ app.post('/', function(req, res) {
     }
 });
 
+app.post('/clear', function(req, res){
+	io.sockets.emit('clearBoard',{});
+});
+
 io.on('connection', function(socket) {
     console.log('made connection');
     socket.on('processedData', function(data) {
