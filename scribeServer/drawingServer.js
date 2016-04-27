@@ -11,7 +11,8 @@ var io = require('socket.io')(http);
 var path = require('path');
 var fs = require('fs');
 var bodyParser = require('body-parser');
-var PythonShell = require('python-shell');
+//var PythonShell = require('python-shell');
+var child = require('child_process');
 
 var drawingStarted = false;
 var recordFile = 'recordedData.txt';
@@ -81,11 +82,18 @@ app.post('/clear', function(req, res){
 });
 
 app.get('/downloadvideo', function(req, res){
-    PythonShell.run('videoscript.py', function(err) {
+    /*PythonShell.run('videoscript.py', function(err) {
 	if (err) throw err;
 	console.log('finished');
-    });
-    res.send('finished video generation');
+    });*/
+    child.execSync('python videoscript.py');
+    /*child.on('exit', function(){
+	process.exit();
+    });*/
+
+    var file = __dirname + '/demo.mp4';
+    res.download(file);
+    res.send('done');
 });
 
 io.on('connection', function(socket) {
