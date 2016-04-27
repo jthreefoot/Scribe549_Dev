@@ -32,6 +32,11 @@ y = []
 
 fig = plt.figure()
 ax = fig.add_subplot(1,1,1)
+axes = plt.gca()
+axes.set_xlim([-500,500])
+axes.set_ylim([1000,0]) #bc lidar setup draws w y=0 at top of board and inc y draws down to 1000
+axes.axes.get_xaxis().set_visible(False)
+axes.axes.get_yaxis().set_visible(False)
 Writer = animation.writers['ffmpeg']
 writer = Writer(fps=FRAMERATE, metadata=dict(artist="me"), bitrate=VIDBITRATE)
 
@@ -61,7 +66,7 @@ def animate(i):
             ax.plot(x,y)
     
 ani = animation.FuncAnimation(fig, animate, interval=FRAMEINT)
-ani.save('test.mp4', writer=writer)
+ani.save('demo.mp4', writer=writer)
 
 # the outro business
 #datafile.close()
