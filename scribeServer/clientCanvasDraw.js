@@ -7,7 +7,7 @@ var ctx = c.getContext('2d');
 var App;
 
 App = {};
-App.socket = io.connect('http://localhost:7000');
+App.socket = io.connect('http://45.55.185.21:7000');
 
 c = document.getElementById('can');
 ctx = c.getContext("2d");

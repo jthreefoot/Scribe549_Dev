@@ -34,6 +34,7 @@ app.post('/', function(req, res) {
 	drawingStarted = true;
 	var x1 = parseFloat(req.body.x);
 	var y1 = parseFloat(req.body.y);
+        console.log(x1);
 	fs.appendFile(recordFile, x1 + ',' + y1 + '\n', function(err) {
 	    if(err) return console.log(err);
 	});
@@ -47,7 +48,8 @@ app.post('/', function(req, res) {
     if (stop == 0) {
 	var x1 = parseFloat(req.body.x);
 	var y1 = parseFloat(req.body.y);
-	//console.log("x: " + x1 + " y: " + y1);
+        console.log("HERE\n");
+	console.log("x: " + x1 + " y: " + y1);
 	fs.appendFile(recordFile, x1 + ',' + y1 + '\n', function(err) {
 	    if(err) return console.log(err);
 	});
@@ -58,9 +60,10 @@ app.post('/', function(req, res) {
 	    type: "drawing"
 	});
     } else { //pen lifted so stopped drawing
-	//console.log("stop");
+	console.log("stop");
 	var x1 = parseFloat(req.body.x);
 	var y1 = parseFloat(req.body.y);
+        console.log("here for some reason.. \n");
 	fs.appendFile(recordFile, x1 + ',' + y1 + '\nend\n', function(err) {
 	    if(err) return console.log(err);
 	});
@@ -78,10 +81,19 @@ app.post('/clear', function(req, res){
 	if(err) return console.log(err);
     });
     io.sockets.emit('clear',{});
+    console.log("CLEARED CLEARED CLEARED");
     res.send('ok');
 });
 
+app.post('/done', function(req, res){
+   console.log("Tried to done");
+   io.sockets.emit('done',{}); 
+   console.log("DONE DONE DONE");
+   res.send('ok');
+}); 
+
 app.get('/downloadvideo', function(req, res){
+    console.log("am I h ere?");
     /*PythonShell.run('videoscript.py', function(err) {
 	if (err) throw err;
 	console.log('finished');
@@ -93,7 +105,7 @@ app.get('/downloadvideo', function(req, res){
 
     var file = __dirname + '/demo.mp4';
     res.download(file);
-    res.send('done');
+    //res.send('done');
 });
 
 io.on('connection', function(socket) {

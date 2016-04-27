@@ -57,8 +57,8 @@ def animate(i):
         else: #point. is of form x,y
             #if (drawing == True):
             data = data.split(',')
-            x.append(int(data[0]))
-            y.append(int(data[1]))
+            x.append(float(data[0]))
+            y.append(float(data[1]))
             ax.plot(x,y,'b-')
     
 ani = animation.FuncAnimation(fig, animate, interval=FRAMEINT)
