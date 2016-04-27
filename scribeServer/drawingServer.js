@@ -13,6 +13,7 @@ var fs = require('fs');
 var bodyParser = require('body-parser');
 
 var drawingStarted = false;
+var recordFile = 'recordedData.txt';
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -22,16 +23,18 @@ app.get('/', function(req, res) {
 
 app.use(express.static('public'));
 
-//ctx.beginPath();
-//      ctx.rect(0,0,400,400);
-//      ctx.fillStyle="white";
-//      ctx.fill();
 var dragStart = 0 
 var dragEnd = 0 
+
 
 app.post('/', function(req, res) {
     if (drawingStarted != true) { //first data point
 	drawingStarted = true;
+	var x1 = parseFloat(req.body.x);
+	var y1 = parseFloat(req.body.y);
+	fs.appendFile(recordFile, x1 + ',' + y1 + '\n', function(err) {
+	    if(err) return console.log(err);
+	});
 	io.sockets.emit('draw', {
 	    x: x1,
 	    y: y1,
@@ -42,7 +45,10 @@ app.post('/', function(req, res) {
     if (stop == 0) {
 	var x1 = parseFloat(req.body.x);
 	var y1 = parseFloat(req.body.y);
-	console.log("x: " + x1 + " y: " + y1);
+	//console.log("x: " + x1 + " y: " + y1);
+	fs.appendFile(recordFile, x1 + ',' + y1 + '\n', function(err) {
+	    if(err) return console.log(err);
+	});
 	
 	io.sockets.emit('draw', {
 	    x: x1,
@@ -50,17 +56,27 @@ app.post('/', function(req, res) {
 	    type: "drawing"
 	});
     } else { //pen lifted so stopped drawing
-	console.log("stop");
+	//console.log("stop");
+	var x1 = parseFloat(req.body.x);
+	var y1 = parseFloat(req.body.y);
+	fs.appendFile(recordFile, x1 + ',' + y1 + '\nend\n', function(err) {
+	    if(err) return console.log(err);
+	});
 	io.sockets.emit('draw', {
 	    x: x1,
 	    y: y1,
 	    type: "end"
 	});
     }
+    res.send('ok'); // so curl won't hang forever and crash the edison
 });
 
 app.post('/clear', function(req, res){
-	io.sockets.emit('clearBoard',{});
+    fs.appendFile(recordFile, 'clear\n', function(err) {
+	if(err) return console.log(err);
+    });
+    io.sockets.emit('clear',{});
+    res.send('ok');
 });
 
 io.on('connection', function(socket) {
