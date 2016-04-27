@@ -1,18 +1,64 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <link rel ="stylesheet" type = "text/css" href = "materialize/css/materialize.css">
-    <title>should be drawing data</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Scribe 549</title>
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/android-desktop.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="stylesheet" href="mdl/material.min.css">
+     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   </head>
   <body>
-  <h1> This Canvas is Actively Recieveing DATA points</h1>
-  <h2> And Drawing Them! </h2>
-    <canvas id="can" width=1000 height=1000 style="border: 1px solid black;"></canvas>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+      <header class="mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title"><b>Scribe 549</b></span>
+          <div class="mdl-layout-spacer"></div>
+        </div>
+      </header>
+      <div class="drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+        <header class="drawer-header">
+          <div>
+            </br>
+            </br>
+            <span class = "mdl-layout-spacer mdl-typography--text-center"><b>Options</b></span>
+            </br>
+            </br>
+          </div>
+        </header>
+        <nav class="navigation mdl-navigation mdl-color--blue-grey-800">
+          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">home</i>Home</a>
+          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">palette</i>Colors</a>
+          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">file_download</i>Download</a>
+          <div class="mdl-layout-spacer"></div>
+        </nav>
+      </div>
+     <main class="mdl-layout__content mdl-color--grey-100">
+      <div class="mdl-grid">
+       <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--7-col mdl-grid" style="border-radius: 25px">
+        <canvas id="can" width=612 height=480 style="border: 2px solid black; border-radius: 25px;"></canvas>
+       </div>
+      </div>
+     </main>
     <br/>
-    <script>
-      //prepare the canvas
-
-    </script>
+    <script src="mdl/material.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/clientCanvasDraw.js"></script>
