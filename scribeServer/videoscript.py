@@ -51,7 +51,9 @@ def animate(i):
             y.append(None)
             ax.plot(x,y,'b-')
         elif (data[0] == 'c'): #found clear
-            pass #dwi later
+            del x[:]
+            del y[:]
+            del ax.lines[:]
         else: #point. is of form x,y
             #if (drawing == True):
             data = data.split(',')
