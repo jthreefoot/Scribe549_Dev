@@ -47,8 +47,9 @@ def animate(i):
     data = datafile.readline()
     if ((data != "") and (data != "\n")):
         if (data[0] == 'e'): #found end
-            #drawing = False
-            pass
+            x.append(None)
+            y.append(None)
+            ax.plot(x,y,'b-')
         elif (data[0] == 'c'): #found clear
             pass #dwi later
         else: #point. is of form x,y
