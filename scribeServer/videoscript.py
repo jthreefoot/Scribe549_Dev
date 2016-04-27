@@ -3,8 +3,8 @@ import matplotlib.animation as animation
 
 ### CONSTANTS ###
 # file stuff
-DATADIR = "../drawingTestData/datafiles/"
-FILENAME = "actualtestfile.txt"
+#DATADIR = "../drawingTestData/datafiles/"
+#FILENAME = "actualtestfile.txt"
 # colors/line width/etc options
 BGCOLOR = "white"
 LINECOLOR = "k" #in matplotlib this for black lines
@@ -25,7 +25,7 @@ drawing = False # drawing/erasing or not
 drawOrErase = ISDRAWING # drawing vs erasing
 
 # setup
-datafile = open(DATADIR + FILENAME, "r")
+datafile = open('recordedData.txt', "r") #was DATADIR + FILENAME
 
 x = []
 y = []
@@ -42,27 +42,20 @@ writer = Writer(fps=FRAMERATE, metadata=dict(artist="me"), bitrate=VIDBITRATE)
 
 # doing the animatey thing
 def animate(i):
-    global drawing
+    #global drawing
     # get next data
     data = datafile.readline()
-    if (data != ""):
-        if (data[0] == '('):
-            #coord
-            data = data.translate(None, '()')
+    if ((data != "") and (data != "\n")):
+        if (data[0] == 'e'): #found end
+            #drawing = False
+            pass
+        elif (data[0] == 'c'): #found clear
+            pass #dwi later
+        else: #point. is of form x,y
+            #if (drawing == True):
             data = data.split(',')
             x.append(int(data[0]))
             y.append(int(data[1]))
-        if (data[0] == 's'): #start
-            drawing = True
-            line = data.split(' ');
-            if (data[1] == "draw"):
-                drawOrErase = ISDRAWING
-            elif (data[1] == "erase"):
-                drawOrErase = ISERASING
-        if (data[0] == 'e'): #end
-            drawing = False
-        # now draw the new point
-        if ((drawing == True) and (x != -1) and (y != -1)):
             ax.plot(x,y)
     
 ani = animation.FuncAnimation(fig, animate, interval=FRAMEINT)
@@ -70,4 +63,4 @@ ani.save('demo.mp4', writer=writer)
 
 # the outro business
 #datafile.close()
-plt.show()
+#plt.show()
