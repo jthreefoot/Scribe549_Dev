@@ -11,6 +11,7 @@ var io = require('socket.io')(http);
 var path = require('path');
 var fs = require('fs');
 var bodyParser = require('body-parser');
+var PythonShell = require('python-shell');
 
 var drawingStarted = false;
 var recordFile = 'recordedData.txt';
@@ -77,6 +78,14 @@ app.post('/clear', function(req, res){
     });
     io.sockets.emit('clear',{});
     res.send('ok');
+});
+
+app.get('/downloadvideo', function(req, res){
+    PythonShell.run('videoscript.py', function(err) {
+	if (err) throw err;
+	console.log('finished');
+    });
+    res.send('finished video generation');
 });
 
 io.on('connection', function(socket) {
